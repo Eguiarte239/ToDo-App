@@ -5,9 +5,12 @@ namespace App\Http\Livewire;
 use App\Models\Task;
 use Illuminate\Support\Facades\Auth;
 use Livewire\Component;
+use Livewire\WithFileUploads;
 
 class TaskList extends Component
 {
+    use WithFileUploads;
+
     public $task;
     public $openModal = false;
     public $editTask = false;
@@ -17,6 +20,7 @@ class TaskList extends Component
     public $end_time;
     public $hour_estimate;
     public $content;
+    public $image;
     public $priority;
 
 
@@ -28,6 +32,7 @@ class TaskList extends Component
         "end_time" => 'required|date|after_or_equal:task.start_time',
         "hour_estimate" => 'required|between:0,100.99',
         "content" => 'required',
+        "image" => 'required|image|max:2048',
         "priority" => 'nullable'
     ];
 
@@ -50,6 +55,7 @@ class TaskList extends Component
         $this->end_time = $this->task->end_time;
         $this->hour_estimate = $this->task->hour_estimate;
         $this->content = $this->task->content;
+        $this->priority = $this->task->priority;
     }
 
     public function resetValues()
@@ -60,6 +66,7 @@ class TaskList extends Component
         $this->end_time = "";
         $this->hour_estimate = "";
         $this->content = "";
+        $this->priority = null;
     }
 
     public function newNote()
@@ -90,6 +97,7 @@ class TaskList extends Component
         $this->task->content = $this->content;
         $this->task->priority = $this->priority;
         $this->task->save();
+        $this->image->store('images', 'public');
         $this->openModal = false;
 
         return redirect()->route('notes.index');

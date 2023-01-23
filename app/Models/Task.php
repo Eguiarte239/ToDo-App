@@ -24,6 +24,8 @@ class Task extends Model
         'hour_estimate',
         'start_time',
         'end_time',
+        //'image',
+        'priority',
     ];
 
     /**

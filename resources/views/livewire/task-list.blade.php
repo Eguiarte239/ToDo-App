@@ -60,6 +60,9 @@
         </x-slot>
 
         <x-slot name="content">
+            @if ($image)
+                <img class="mb-4" src="{{ $image->temporaryUrl()}}">
+            @endif
             <div class="mb-6">
                 <label for="title" class="block mb-2 text-sm font-medium text-gray-900">
                     Title
@@ -110,6 +113,8 @@
                     <x-jet-input-error for="hour_estimate"></x-jet-input-error>
                 </div>
             </div>
+            <input type="file" wire:model="image">
+            <x-jet-input-error for="image"></x-jet-input-error>
             <div wire:ignore>
                 <label for="content" class="block mb-2 text-sm font-medium text-gray-900">
                 </label>
@@ -123,14 +128,14 @@
             <x-jet-secondary-button wire:click="$toggle('openModal')" wire:loading.attr="disabled">
                 {{ __('Cancel') }}
             </x-jet-secondary-button>
-
+            
             @if ($editTask)
                 <x-jet-secondary-button
                     class="ml-3 bg-red-500 text-white hover:text-white hover:bg-red-700 active:bg-red-50"
-                    wire:loading.attr="disabled" wire:click="deleteTask({{ $task->id }})">
+                    wire:loading.attr="disabled" wire:click="deleteTask({{ $this->task->id }})">
                     {{ __('Delete') }}
                 </x-jet-secondary-button>
-                <x-jet-button class="ml-3" wire:click="editTask({{ $task->id }})" wire:loading.attr="disabled">
+                <x-jet-button class="ml-3" wire:click="editTask({{ $this->task->id }})" wire:loading.attr="disabled">
                     Save task
                 </x-jet-button>
             @else
