@@ -6,6 +6,9 @@ use App\Models\Task;
 use Illuminate\Support\Facades\Auth;
 use Livewire\Component;
 use Livewire\WithFileUploads;
+use Intervention\Image\Facades\Image;
+use Illuminate\Support\Str;
+use Illuminate\Support\Facades\File; 
 
 class TaskList extends Component
 {
@@ -22,6 +25,7 @@ class TaskList extends Component
     public $content;
     public $image;
     public $priority;
+    public $imageId;
 
 
     protected $listeners = ['refreshComponent' => '$refresh'];
@@ -29,12 +33,16 @@ class TaskList extends Component
     protected $rules = [
         "title" => 'required|string|max:255',
         "start_time" => 'required|date',
-        "end_time" => 'required|date|after_or_equal:task.start_time',
-        "hour_estimate" => 'required|between:0,100.99',
-        "content" => 'required',
+        "end_time" => 'required|date|after_or_equal:start_time',
+        "hour_estimate" => 'required|integer|between:0,100.99',
+        "content" => 'required|string|max:500',
         "image" => 'required|image|max:2048',
-        "priority" => 'nullable'
+        "priority" => 'required',
     ];
+
+    public function mount(){
+        $this->imageId = rand();
+    }
 
     public function getTasksProperty()
     {
@@ -62,11 +70,12 @@ class TaskList extends Component
     {
         $this->task = new Task();
         $this->title = "";
-        $this->start_time = "";
+        $this->start_time = now()->format('Y-m-d');
         $this->end_time = "";
         $this->hour_estimate = "";
         $this->content = "";
         $this->priority = null;
+        $this->imageId = rand();
     }
 
     public function newNote()
@@ -96,8 +105,14 @@ class TaskList extends Component
         $this->task->hour_estimate = $this->hour_estimate;
         $this->task->content = $this->content;
         $this->task->priority = $this->priority;
+        $name = Str::random(10).$this->image->getClientOriginalName();
+        $route = storage_path().'\app\public\images/'.$name;
+        Image::make($this->image)->resize(1200, null, function ($constraint) {
+            $constraint->aspectRatio();
+        })->encode('jpg')->save($route);
+        $url = '/storage/images/'.$name;
+        $this->task->image = $url;
         $this->task->save();
-        $this->image->store('images', 'public');
         $this->openModal = false;
 
         return redirect()->route('notes.index');
@@ -115,6 +130,14 @@ class TaskList extends Component
         $this->task->hour_estimate = $this->hour_estimate;
         $this->task->content = $this->content;
         $this->task->priority = $this->priority;
+        //File::delete($this->task->image);
+        $name = Str::random(10).$this->image->getClientOriginalName();
+        $route = storage_path().'\app\public\images/'.$name;
+        Image::make($this->image)->resize(1200, null, function ($constraint) {
+            $constraint->aspectRatio();
+        })->encode('jpg')->save($route);
+        $url = '/storage/images/'.$name;
+        $this->task->image = $url;
         $this->task->save();
         $this->openModal = false;
     }

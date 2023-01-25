@@ -19,7 +19,10 @@
                         <div wire:sortable.item="{{ $task->id }}" wire:key="task-{{ $task->id }}" class="mb-2 bg-white rounded-lg shadow-md p-2 border">
                             <div class="px-2" wire:sortable.handle>
                                 <div class="flex flex-row justify-between">
-                                    <div class="font-bold text-xl mb-2" >{{ $task->title }}</div>
+                                    <div class="font-bold text-xl mb-2" >
+                                        {{ $task->title }}
+                                        <img src="{{ $task->image }}" alt="Image" style="width: 100px; height: 150px;">
+                                    </div>
                                     <div>
                                         <button wire:click="editNote({{ $task->id }})">
                                             <svg xmlns="http://www.w3.org/2000/svg" fill="none"
@@ -33,9 +36,19 @@
                                     </div>
                                 </div>
                                 <p class="text-gray-700 text-base">
-                                    {!! $task->content !!}
+                                    {{ $task->content }}
+                                    {{ $task->priority }}
                                 </p>
                             </div>
+                            <span
+                                class="flex flex-row bg-purple-200 rounded-lg px-3 py-1 text-sm font-semibold text-purple-800 mr-2 mt-2">
+                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                                    stroke-width="1.5" stroke="currentColor" class="w-5 h-5">
+                                    <path stroke-linecap="round" stroke-linejoin="round"
+                                        d="M12 6v6h4.5m4.5 0a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                </svg>
+                                {{ $task->start_task }}
+                            </span>
                             <span
                                 class="flex flex-row bg-purple-200 rounded-lg px-3 py-1 text-sm font-semibold text-purple-800 mr-2 mt-2">
                                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
@@ -60,9 +73,6 @@
         </x-slot>
 
         <x-slot name="content">
-            @if ($image)
-                <img class="mb-4" src="{{ $image->temporaryUrl()}}">
-            @endif
             <div class="mb-6">
                 <label for="title" class="block mb-2 text-sm font-medium text-gray-900">
                     Title
@@ -74,16 +84,17 @@
             </div>
             <div class="grid gap-6 mb-6 md:grid-cols-4">
                 <div>
-                    <label for="start_time" class="block mb-2 text-sm font-medium text-gray-900">
+                    <label for="priority" class="block mb-2 text-sm font-medium text-gray-900">
                         Priority
                     </label>
                     <select name="priority" id="priority"class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5" wire:model="priority">
+                        <option value="" hidden selected></option>
                         <option value="Low">Low</option>
                         <option value="Medium">Medium</option>
                         <option value="High">High</option>
                         <option value="Urgent">Urgent</option>
                     </select>
-                    <x-jet-input-error for="start_time"></x-jet-input-error>
+                    <x-jet-input-error for="priority"></x-jet-input-error>
                 </div>
                 <div>
                     <label for="start_time" class="block mb-2 text-sm font-medium text-gray-900">
@@ -113,7 +124,7 @@
                     <x-jet-input-error for="hour_estimate"></x-jet-input-error>
                 </div>
             </div>
-            <input type="file" wire:model="image">
+            <input type="file" wire:model="image" id="{{ $imageId }}">
             <x-jet-input-error for="image"></x-jet-input-error>
             <div wire:ignore>
                 <label for="content" class="block mb-2 text-sm font-medium text-gray-900">
@@ -135,11 +146,11 @@
                     wire:loading.attr="disabled" wire:click="deleteTask({{ $this->task->id }})">
                     {{ __('Delete') }}
                 </x-jet-secondary-button>
-                <x-jet-button class="ml-3" wire:click="editTask({{ $this->task->id }})" wire:loading.attr="disabled">
+                <x-jet-button class="ml-3" wire:click="editTask({{ $this->task->id }})" wire:loading.attr="disabled" wire:target="save, image">
                     Save task
                 </x-jet-button>
             @else
-                <x-jet-button class="ml-3" wire:click="saveTask" wire:loading.attr="disabled">
+                <x-jet-button class="ml-3" wire:click="saveTask" wire:loading.attr="disabled" wire:target="save, image">
                     Save task
                 </x-jet-button>
             @endif
@@ -154,9 +165,9 @@
         <script>
             ClassicEditor
                 .create(document.querySelector('#contentTask'))
-                .then((editor) => {
-                    editor.model.document.on('change:data', () => {
-                        @this.set('content', editor.getData())
+                .then(function(contentTask) => {
+                    contentTask.model.document.on('change:data', () => {
+                        @this.set('content', contentTask.getData())
                     })
                 })
                 .catch(error => {
