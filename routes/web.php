@@ -1,6 +1,6 @@
 <?php
 
-use App\Http\Controllers\TodoListController;
+use App\Http\Livewire\TaskList;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -19,14 +19,5 @@ Route::middleware([
     config('jetstream.auth_session'),
     'verified'
 ])->group(function () {
-    Route::get('/dashboard', function () {
-        return view('dashboard');
-    })->name('dashboard');
-    Route::get('/', function () {
-        return view('welcome');
-    })->name('dashboard');
-    Route::resource('todolist', TodoListController::class);
-});
-Route::get('/', function () {
-    return redirect()->route('todolist.index');
+    Route::get('/', TaskList::class)->name('notes.index');
 });
