@@ -21,7 +21,7 @@
                                 <div class="flex flex-row justify-between">
                                     <div class="font-bold text-xl mb-2" >
                                         {{ $task->title }}
-                                        <img src="{{ $task->image }}" alt="Image" style="width: 100px; height: 150px;">
+                                       <img src="{{ $task->image }}" alt="Image" style="width: auto; height: 200px;">
                                     </div>
                                     <div>
                                         <button wire:click="editNote({{ $task->id }})">
@@ -35,9 +35,27 @@
 
                                     </div>
                                 </div>
-                                <p class="text-gray-700 text-base">
+                                <p class="mb-3 font-normal text-gray-700 dark:text-gray-800">
                                     {{ $task->content }}
-                                    {{ $task->priority }}
+                                    <br>
+                                    @if ($task->priority == 'Low')
+                                        <span class="bg-blue-100 text-blue-800 text-sm font-medium mr-2 px-2.5 py-0.5 rounded dark:bg-blue-900 dark:text-blue-300">
+                                            {{ $task->priority }}
+                                        </span>
+                                    @elseif ($task->priority == 'Medium')
+                                        <span class="bg-green-100 text-green-800 text-sm font-medium mr-2 px-2.5 py-0.5 rounded dark:bg-green-900 dark:text-green-300">
+                                            {{ $task->priority }}
+                                        </span>
+                                    @elseif ($task->priority == 'High')
+                                        <span class="bg-yellow-100 text-yellow-800 text-sm font-medium mr-2 px-2.5 py-0.5 rounded bg-orange-600 dark:text-yellow-300">
+                                            {{ $task->priority }}
+                                        </span>
+                                    @else
+                                        <span class="bg-red-100 text-red-800 text-sm font-medium mr-2 px-2.5 py-0.5 rounded dark:bg-red-900 dark:text-red-300">
+                                            {{ $task->priority }}
+                                        </span>
+                                    @endif
+                                    
                                 </p>
                             </div>
                             <span
@@ -50,7 +68,7 @@
                                 {{ $task->start_task }}
                             </span>
                             <span
-                                class="flex flex-row bg-purple-200 rounded-lg px-3 py-1 text-sm font-semibold text-purple-800 mr-2 mt-2">
+                                class="flex flex-row bg-red-200 rounded-lg px-3 py-1 text-sm font-semibold text-red-800 mr-2 mt-2">
                                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
                                     stroke-width="1.5" stroke="currentColor" class="w-5 h-5">
                                     <path stroke-linecap="round" stroke-linejoin="round"
@@ -129,7 +147,7 @@
             <div wire:ignore>
                 <label for="content" class="block mb-2 text-sm font-medium text-gray-900">
                 </label>
-                <textarea wire:model="content" name="contentTask" id="contentTask" cols="30" rows="10" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"></textarea>
+                <textarea wire:model="content" name="editor" id="editor" cols="30" rows="10" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"></textarea>
             </div>
             <x-jet-input-error for="content"></x-jet-input-error>
 
@@ -157,22 +175,22 @@
         </x-slot>
     </x-jet-dialog-modal>
 
-    @push('scripts')
-        <script src="https://cdn.ckeditor.com/ckeditor5/35.4.0/classic/ckeditor.js"></script>
+    @push('js')
+        {{--<script src="https://cdn.ckeditor.com/ckeditor5/35.4.0/classic/ckeditor.js"></script>--}}
         <script src="https://cdn.jsdelivr.net/gh/livewire/sortable@v0.x.x/dist/livewire-sortable.js"></script>
 
 
-        <script>
+        {{--<script>
             ClassicEditor
-                .create(document.querySelector('#contentTask'))
-                .then(function(contentTask) => {
-                    contentTask.model.document.on('change:data', () => {
-                        @this.set('content', contentTask.getData())
+                .create(document.querySelector('#editor'))
+                .then(function(editor) => {
+                    content.model.document.on('change:data', () => {
+                        @this.set('content', editor.getData())
                     })
                 })
                 .catch(error => {
                     console.error(error);
                 });
-        </script>
+        </script>--}}
     @endpush
 </div>
