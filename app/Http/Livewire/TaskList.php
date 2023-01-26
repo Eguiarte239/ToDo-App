@@ -8,7 +8,8 @@ use Livewire\Component;
 use Livewire\WithFileUploads;
 use Intervention\Image\Facades\Image;
 use Illuminate\Support\Str;
-use Illuminate\Support\Facades\File; 
+use Illuminate\Support\Facades\File;
+use Illuminate\Support\Facades\Storage;
 
 class TaskList extends Component
 {
@@ -26,6 +27,7 @@ class TaskList extends Component
     public $image;
     public $priority;
     public $imageId;
+    public $path;
 
 
     protected $listeners = ['refreshComponent' => '$refresh'];
@@ -41,6 +43,7 @@ class TaskList extends Component
     ];
 
     public function mount(){
+        $path = public_path('/images');
         $this->imageId = rand();
     }
 
@@ -96,6 +99,9 @@ class TaskList extends Component
     public function saveTask()
     {
         $this->validate();
+        if(!File::exists($this->path)) {
+            Storage::disk('public')->makeDirectory('images');
+        }
 
         $this->task = new Task();
         $this->task->user_id = Auth::user()->id;
