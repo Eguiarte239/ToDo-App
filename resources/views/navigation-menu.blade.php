@@ -1,4 +1,4 @@
-<nav x-data="{ open: false }" class="bg-white border-b border-gray-100">
+<nav x-data="{ open: false }" class="bg-white border-b border-gray-100 dark:bg-slate-400 dark:border-slate-400">
     <!-- Primary Navigation Menu -->
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div class="flex justify-between h-16">
@@ -7,7 +7,7 @@
                 <div class="container flex flex-wrap items-center justify-between mx-auto">
                     <a class="flex items-center" href="{{ route('notes.index') }}">
                         <x-jet-application-mark class="h-6 mr-3 sm:h-10" />
-                        <span class="self-center text-xl font-semibold whitespace-nowrap">Todo App</span>
+                        <span class="self-center text-xl font-semibold whitespace-nowrap dark:text-white">Todo App</span>
                     </a>
                 </div>
             </div>

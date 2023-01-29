@@ -15,11 +15,12 @@
 
         <!-- Styles -->
         @livewireStyles
+        <script src="to/prefers-dark.js"></script>
     </head>
-    <body class="font-sans antialiased">
+    <body class="font-sans antialiased mode-dark">
         <x-jet-banner />
 
-        <div class="min-h-screen bg-gray-100">
+        <div class="min-h-screen bg-gray-100 dark:bg-slate-800">
             @livewire('navigation-menu')
 
             <!-- Page Content -->
