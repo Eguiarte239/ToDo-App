@@ -34,7 +34,7 @@ class TaskList extends Component
 
     protected $rules = [
         "title" => 'required|string|max:255',
-        "start_time" => 'required|date',
+        "start_time" => 'required|date|after_or_equal:today',
         "end_time" => 'required|date|after_or_equal:start_time',
         "hour_estimate" => 'required|integer|between:0,100.99',
         "content" => 'required|string|max:500',
@@ -136,7 +136,6 @@ class TaskList extends Component
         $this->task->hour_estimate = $this->hour_estimate;
         $this->task->content = $this->content;
         $this->task->priority = $this->priority;
-        //File::delete($this->task->image);
         $name = Str::random(10).$this->image->getClientOriginalName();
         $route = storage_path().'\app\public\images/'.$name;
         Image::make($this->image)->resize(1200, null, function ($constraint) {
