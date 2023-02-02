@@ -4,6 +4,7 @@ namespace App\Http\Livewire;
 
 use App\Models\Task;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Crypt;
 use Livewire\Component;
 use Livewire\WithFileUploads;
 use Intervention\Image\Facades\Image;
@@ -111,7 +112,7 @@ class TaskList extends Component
         $this->task->hour_estimate = $this->hour_estimate;
         $this->task->content = $this->content;
         $this->task->priority = $this->priority;
-        $name = Str::random(10).$this->image->getClientOriginalName();
+        $name =  Crypt::encryptString($this->image->getClientOriginalName());
         $route = storage_path().'\app\public\images/'.$name;
         Image::make($this->image)->resize(1200, null, function ($constraint) {
             $constraint->aspectRatio();
@@ -136,7 +137,7 @@ class TaskList extends Component
         $this->task->hour_estimate = $this->hour_estimate;
         $this->task->content = $this->content;
         $this->task->priority = $this->priority;
-        $name = Str::random(10).$this->image->getClientOriginalName();
+        $name = Crypt::encryptString($this->image->getClientOriginalName());
         $route = storage_path().'\app\public\images/'.$name;
         Image::make($this->image)->resize(1200, null, function ($constraint) {
             $constraint->aspectRatio();
