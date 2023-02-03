@@ -45,7 +45,7 @@ class TaskList extends Component
 
     public function mount(){
         $path = public_path('/images');
-        $this->imageId = rand();
+        $this->imageId = uniqid();
     }
 
     public function getTasksProperty()
@@ -79,7 +79,7 @@ class TaskList extends Component
         $this->hour_estimate = "";
         $this->content = "";
         $this->priority = null;
-        $this->imageId = rand();
+        $this->imageId = uniqid();
     }
 
     public function newNote()
@@ -112,12 +112,12 @@ class TaskList extends Component
         $this->task->hour_estimate = $this->hour_estimate;
         $this->task->content = $this->content;
         $this->task->priority = $this->priority;
-        $name =  Crypt::encryptString($this->image->getClientOriginalName());
+        $name =  $this->image->getClientOriginalName();
         $route = storage_path().'\app\public\images/'.$name;
         Image::make($this->image)->resize(1200, null, function ($constraint) {
             $constraint->aspectRatio();
         })->encode('jpg')->save($route);
-        $url = '/storage/images/'.$name;
+        $url = Crypt::encrypt('/storage/images/'.$name);
         $this->task->image = $url;
         $this->task->save();
         $this->openModal = false;

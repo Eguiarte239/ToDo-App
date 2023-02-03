@@ -18,10 +18,10 @@
                     @foreach ($tasks as $task)
                         <div wire:sortable.item="{{ $task->id }}" wire:key="task-{{ $task->id }}" class="mb-2 bg-white rounded-lg shadow-md p-2 border dark:bg-slate-600">
                             <div class="px-2" wire:sortable.handle>
-                                <div class="flex flex-row justify-between">
+                                <div class="flex flex-row justify-between">                      
                                     <div class="font-bold text-xl dark:text-white mb-2" >
                                         {{ $task->title }}
-                                       <img src="{{ $task->image }}" alt="Image" style="width: auto; height: 200px;">
+                                        <img src="{{ Crypt::decrypt($task->image) }}" alt="Image" style="width: auto; height: 200px;">
                                     </div>
                                     <div>
                                         <button wire:click="editNote({{ $task->id }})">
@@ -32,7 +32,6 @@
                                                     d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L10.582 16.07a4.5 4.5 0 01-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 011.13-1.897l8.932-8.931zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0115.75 21H5.25A2.25 2.25 0 013 18.75V8.25A2.25 2.25 0 015.25 6H10" />
                                             </svg>
                                         </button>
-
                                     </div>
                                 </div>
                                     <p class="mb-3 font-normal text-gray-700 dark:text-white">
@@ -183,8 +182,6 @@
     @push('js')
         {{--<script src="https://cdn.ckeditor.com/ckeditor5/35.4.0/classic/ckeditor.js"></script>--}}
         <script src="https://cdn.jsdelivr.net/gh/livewire/sortable@v0.x.x/dist/livewire-sortable.js"></script>
-
-
         {{--<script>
             ClassicEditor
                 .create(document.querySelector('#editor'))
