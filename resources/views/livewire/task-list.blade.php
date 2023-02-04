@@ -18,11 +18,13 @@
                     @foreach ($tasks as $task)
                         <div wire:sortable.item="{{ $task->id }}" wire:key="task-{{ $task->id }}" class="mb-2 bg-white rounded-lg shadow-md p-2 border dark:bg-slate-600">
                             <div class="px-2" wire:sortable.handle>
-                                <div class="flex flex-row justify-between">                      
+                                <div class="flex flex-row justify-between">
                                     <div class="font-bold text-xl dark:text-white mb-2" >
                                         {{ $task->title }}
-                                        <img src="{{ Crypt::decrypt($task->image) }}" alt="Image" style="width: auto; height: 200px;">
-                                    </div>
+                                        @foreach (json_decode(Crypt::decrypt($task->image)) as $image)
+                                            <img src="{{ $image }}" alt="Image"  class="object-cover w-48 py-5">
+                                        @endforeach
+                                    </div>    
                                     <div>
                                         <button wire:click="editNote({{ $task->id }})">
                                             <svg xmlns="http://www.w3.org/2000/svg" fill="none"
@@ -146,7 +148,7 @@
                     <x-jet-input-error for="hour_estimate"></x-jet-input-error>
                 </div>
             </div>
-            <input type="file" wire:model="image" id="{{ $imageId }}">
+            <input type="file" wire:model="image" id="{{ $imageId }}" multiple>
             <x-jet-input-error for="image"></x-jet-input-error>
             <div wire:ignore>
                 <label for="content" class="block mb-2 text-sm font-medium text-gray-900">
