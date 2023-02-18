@@ -8,7 +8,6 @@ use Illuminate\Support\Facades\Crypt;
 use Livewire\Component;
 use Livewire\WithFileUploads;
 use Intervention\Image\Facades\Image;
-use Illuminate\Support\Str;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Storage;
 
@@ -41,7 +40,7 @@ class TaskList extends Component
         "end_time" => 'required|date|after_or_equal:start_time',
         "hour_estimate" => 'required|integer|between:0,100.99',
         "content" => 'required|string|max:500',
-        "image.*" => 'required|image|max:2048',
+        "image.*" => 'image|max:2048',
         "priority" => 'required',
     ];
 
@@ -114,15 +113,20 @@ class TaskList extends Component
         $this->task->hour_estimate = $this->hour_estimate;
         $this->task->content = $this->content;
         $this->task->priority = $this->priority;
-        foreach ($this->image as $image) {
-            $name =  $image->getClientOriginalName();
-            $route = storage_path().'\app\public\images/'.$name;
-            Image::make($image)->resize(1200, null, function ($constraint) {
-                $constraint->aspectRatio();
-            })->encode('jpg')->save($route);
-            $urls[] = '/storage/images/'.$name;
+        if(!empty($this->image)){
+            foreach ($this->image as $image) {
+                $name =  $image->getClientOriginalName();
+                $route = storage_path().'\app\public\images/'.$name;
+                Image::make($image)->resize(1200, null, function ($constraint) {
+                    $constraint->aspectRatio();
+                })->encode('jpg')->save($route);
+                $urls[] = '/storage/images/'.$name;
+            }
+            $this->task->image = Crypt::encrypt(json_encode($urls));
         }
-        $this->task->image = Crypt::encrypt(json_encode($urls));
+        else{
+            $this->task->image = null;
+        }
         $this->task->save();
         $this->openModal = false;
 
@@ -141,15 +145,20 @@ class TaskList extends Component
         $this->task->hour_estimate = $this->hour_estimate;
         $this->task->content = $this->content;
         $this->task->priority = $this->priority;
-        foreach ($this->image as $image) {
-            $name =  $image->getClientOriginalName();
-            $route = storage_path().'\app\public\images/'.$name;
-            Image::make($image)->resize(1200, null, function ($constraint) {
-                $constraint->aspectRatio();
-            })->encode('jpg')->save($route);
-            $urls[] = '/storage/images/'.$name;
+        if(!empty($this->image)){
+            foreach ($this->image as $image) {
+                $name =  $image->getClientOriginalName();
+                $route = storage_path().'\app\public\images/'.$name;
+                Image::make($image)->resize(1200, null, function ($constraint) {
+                    $constraint->aspectRatio();
+                })->encode('jpg')->save($route);
+                $urls[] = '/storage/images/'.$name;
+            }
+            $this->task->image = Crypt::encrypt(json_encode($urls));
         }
-        $this->task->image = Crypt::encrypt(json_encode($urls));
+        else{
+            $this->task->image = null;
+        }
         $this->task->save();
         $this->openModal = false;
     }

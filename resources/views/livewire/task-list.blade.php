@@ -21,9 +21,13 @@
                                 <div class="flex flex-row justify-between">
                                     <div class="font-bold text-xl dark:text-white mb-2" >
                                         {{ $task->title }}
-                                        @foreach (json_decode(Crypt::decrypt($task->image)) as $image)
-                                            <img src="{{ $image }}" alt="Image"  class="object-cover w-48 py-5">
-                                        @endforeach
+                                        @if(!empty($task->image))
+                                            @foreach (json_decode(Crypt::decrypt($task->image)) as $image)
+                                                <img src="{{ $image }}" alt="Image"  class="object-cover w-48 py-5">
+                                            @endforeach                                               
+                                        @else
+                                            <p>No image</p>
+                                        @endif
                                     </div>    
                                     <div>
                                         <button wire:click="editNote({{ $task->id }})">

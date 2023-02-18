@@ -3,14 +3,15 @@
 namespace App\Models;
 
 use Carbon\Carbon;
-use Carbon\Doctrine\CarbonType;
+
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Support\Carbon as SupportCarbon;
+use Spatie\Activitylog\Traits\LogsActivity;
+use Spatie\Activitylog\LogOptions;
 
 class Task extends Model
 {
-    use HasFactory;
+    use HasFactory, LogsActivity;
 
     /**
      * The attributes that are mass assignable.
@@ -27,6 +28,12 @@ class Task extends Model
         'image',
         'priority',
     ];
+
+    public function getActivitylogOptions(): LogOptions
+    {
+        return LogOptions::defaults()
+        ->logFillable();
+    }
 
     /**
      * Get the user that owns the task
