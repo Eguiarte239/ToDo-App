@@ -152,7 +152,7 @@
                     <x-jet-input-error for="hour_estimate"></x-jet-input-error>
                 </div>
             </div>
-            <input type="file" wire:model="image" id="{{ $imageId }}" multiple>
+            <input type="file" wire:model="image" multiple value="">
             <x-jet-input-error for="image"></x-jet-input-error>
             <div wire:ignore>
                 <label for="content" class="block mb-2 text-sm font-medium text-gray-900">

@@ -28,7 +28,6 @@ class TaskList extends Component
     public $urls = [];
 
     public $priority;
-    public $imageId;
     public $path;
 
 
@@ -40,13 +39,12 @@ class TaskList extends Component
         "end_time" => 'required|date|after_or_equal:start_time',
         "hour_estimate" => 'required|integer|between:0,100.99',
         "content" => 'required|string|max:500',
-        "image.*" => 'image|max:2048',
+        "image.*" => 'nullable|mimes:jpeg,png,gif|max:2048',
         "priority" => 'required',
     ];
 
     public function mount(){
         $path = public_path('/images');
-        $this->imageId = uniqid();
     }
 
     public function getTasksProperty()
@@ -80,7 +78,6 @@ class TaskList extends Component
         $this->hour_estimate = "";
         $this->content = "";
         $this->priority = null;
-        $this->imageId = uniqid();
     }
 
     public function newNote()
