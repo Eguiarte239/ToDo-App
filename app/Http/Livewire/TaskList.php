@@ -3,6 +3,7 @@
 namespace App\Http\Livewire;
 
 use App\Models\Task;
+use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Crypt;
 use Livewire\Component;
@@ -13,7 +14,9 @@ use Illuminate\Support\Facades\Storage;
 
 class TaskList extends Component
 {
-    use WithFileUploads;
+    use WithFileUploads, AuthorizesRequests;
+
+    protected $middleware = ['web', 'livewire:protect'];
 
     public $task;
     public $openModal = false;

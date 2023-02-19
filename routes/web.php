@@ -2,6 +2,7 @@
 
 use App\Http\Livewire\TaskList;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\GoogleAuthController;
 
 /*
 |--------------------------------------------------------------------------
@@ -21,3 +22,6 @@ Route::middleware([
 ])->group(function () {
     Route::get('/', TaskList::class)->name('notes.index');
 });
+
+Route::get('/auth/redirect', [GoogleAuthController::class, 'redirect'])->name('google.redirect');
+Route::get('/auth/callback', [GoogleAuthController::class, 'callback'])->name('google.callback'); 
