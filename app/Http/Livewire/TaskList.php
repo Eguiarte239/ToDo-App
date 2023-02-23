@@ -43,7 +43,7 @@ class TaskList extends Component
         "hour_estimate" => 'required|integer|between:0,100.99',
         "content" => 'required|string|max:500',
         "image.*" => 'nullable|mimes:jpeg,png,gif|max:2048',
-        "priority" => 'required',
+        "priority" => 'required|in:Low,Medium,High,Urgent',
     ];
 
     public function mount(){

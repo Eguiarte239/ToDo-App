@@ -72,9 +72,35 @@ class TaskController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(Request $request, $title)
     {
-        //
+        $credentials = $request->validate([
+            'title' => ['required', 'string', 'max:255'],
+        ]);
+        $user = $request->user();
+        $task = Task::where('title', $credentials['title'])->where('user_id', $user->id)->firstOrFail();
+        if (!$task) {
+            return response()->json(['error' => 'Task not found'], 404);
+        }
+
+        $data = $request->validate([
+            "title" => 'required|string|max:255',
+            "start_time" => 'required|date|after_or_equal:today',
+            "end_time" => 'required|date|after_or_equal:start_time',
+            "hour_estimate" => 'required|integer|between:0,100.99',
+            "content" => 'required|string|max:500',
+            "image.*" => 'nullable|mimes:jpeg,png,gif|max:2048',
+            'priority' => 'required|in:Low,Medium,High,Urgent',
+        ]);
+
+        if ($request->hasFile('image')) {
+            $image = $request->file('image')->store('public/images');
+            $data['image'] = $image;
+        }
+
+        $task->update($data);
+
+        return response()->json($task);
     }
 
     /**
@@ -83,8 +109,16 @@ class TaskController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function destroy(Request $request, $title)
     {
-        //
+        $credentials = $request->validate([
+            'title' => ['required', 'string', 'max:255'],
+        ]);
+        $user = $request->user();
+        $task = Task::where('title', $credentials['title'])->where('user_id', $user->id)->firstOrFail();
+
+        $task->delete();
+
+        return response()->json(['message' => 'Task deleted successfully']);
     }
 }
