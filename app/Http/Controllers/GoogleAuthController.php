@@ -34,6 +34,8 @@ class GoogleAuthController extends Controller
                 'external_id' => $user->id,
                 'external_auth' => 'google',
             ]);
+            // Asignar el rol "google-user" al usuario recién creado
+            $userNew->assignRole('google-user');
             Auth::login($userNew);
         }
 

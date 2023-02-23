@@ -1,3 +1,4 @@
+@can('change-password')
 <x-jet-form-section submit="updatePassword">
     <x-slot name="title">
         <div class="dark:text-gray-100">
@@ -41,3 +42,4 @@
         </x-jet-button>
     </x-slot>
 </x-jet-form-section>
+@endcan
