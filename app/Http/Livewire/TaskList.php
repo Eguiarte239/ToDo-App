@@ -3,6 +3,7 @@
 namespace App\Http\Livewire;
 
 use App\Models\Task;
+use App\Rules\UniqueTitleForUser;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Crypt;
@@ -36,18 +37,26 @@ class TaskList extends Component
 
     protected $listeners = ['refreshComponent' => '$refresh'];
 
-    protected $rules = [
-        "title" => 'required|string|max:255',
-        "start_time" => 'required|date|after_or_equal:today',
-        "end_time" => 'required|date|after_or_equal:start_time',
-        "hour_estimate" => 'required|integer|between:0,100.99',
-        "content" => 'required|string|max:500',
-        "image.*" => 'nullable|mimes:jpeg,png,gif|max:2048',
-        "priority" => 'required|in:Low,Medium,High,Urgent',
-    ];
+    protected function rules()
+    {
+        $rules = [
+            "title" => ['required', 'string', 'max:255', new UniqueTitleForUser],
+            "start_time" => ['required', 'date', 'after_or_equal:today'],
+            "end_time" => ['required', 'date', 'after_or_equal:start_time'],
+            "hour_estimate" => ['required', 'integer', 'between:0,100.99'],
+            "content" => ['required', 'string', 'max:500'],
+            "image.*" => ['nullable', 'mimes:jpeg,png,gif', 'max:2048'],
+            "priority" => ['required', 'in:Low,Medium,High,Urgent'],
+        ];
+        
+        return $rules;
+    }
+
+    protected $rules = [];
 
     public function mount(){
-        $path = public_path('/images');
+        $this->path = public_path('/images');
+        $this->rules = $this->rules();
     }
 
     public function getTasksProperty()
