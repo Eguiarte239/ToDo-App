@@ -12,10 +12,11 @@ use Livewire\WithFileUploads;
 use Intervention\Image\Facades\Image;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Storage;
+use Livewire\WithPagination;
 
 class TaskList extends Component
 {
-    use WithFileUploads, AuthorizesRequests;
+    use WithFileUploads, AuthorizesRequests, WithPagination;
 
     protected $middleware = ['web', 'livewire:protect'];
 
@@ -33,6 +34,8 @@ class TaskList extends Component
 
     public $priority;
     public $path;
+
+    public $search = '';
 
 
     protected $listeners = ['refreshComponent' => '$refresh'];
@@ -61,7 +64,7 @@ class TaskList extends Component
 
     public function getTasksProperty()
     {
-        return Task::where('user_id', Auth::user()->id)->orderBy('order_position', 'asc')->get();
+        return Task::where('user_id', Auth::user()->id)->where('title', 'like', '%'.$this->search.'%')->orderBy('order_position', 'asc')->get();
     }
 
     public function render()

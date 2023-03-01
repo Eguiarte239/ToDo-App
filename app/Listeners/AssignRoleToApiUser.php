@@ -28,7 +28,6 @@ class AssignRoleToApiUser
     public function handle(Registered $event)
     {
         if ($event->user->provider === null) {
-            // Si el usuario no se ha registrado con un proveedor externo, se le asigna el rol de jetstream-user.
             $role = Role::where('name', 'jetstream-user')->firstOrFail();
             $event->user->assignRole($role);
         }
