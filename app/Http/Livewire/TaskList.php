@@ -3,6 +3,7 @@
 namespace App\Http\Livewire;
 
 use App\Models\Task;
+use App\Models\User;
 use App\Rules\UniqueTitleForUser;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Support\Facades\Auth;
@@ -30,9 +31,10 @@ class TaskList extends Component
     public $hour_estimate;
     public $content;
     public $image;
-    public $urls = [];
-
     public $priority;
+    public $assigned_to;
+    
+    public $urls = [];
     public $path;
 
     public $search = '';
@@ -50,6 +52,8 @@ class TaskList extends Component
             "content" => ['required', 'string', 'max:500'],
             "image.*" => ['nullable', 'mimes:jpeg,png,gif', 'max:2048'],
             "priority" => ['required', 'in:Low,Medium,High,Urgent'],
+            'assigned_to' => 'nullable',
+            'assigned_to.*' => 'nullable|exists:users,id',
         ];
         
         return $rules;
@@ -64,13 +68,25 @@ class TaskList extends Component
 
     public function getTasksProperty()
     {
-        return Task::where('user_id', Auth::user()->id)->where('title', 'like', '%'.$this->search.'%')->orderBy('order_position', 'asc')->get();
+        //return Task::where('user_id', Auth::user()->id)->where('title', 'like', '%'.$this->search.'%')->orderBy('order_position', 'asc')->get();
+        /*$assignedTasks = Auth::user()->assignedTasks()->where('title', 'like', '%'.$this->search.'%')->orderBy('order_position', 'asc')->get();
+        $userTasks = Task::where('user_id', Auth::user()->id)->where('title', 'like', '%'.$this->search.'%')->orderBy('order_position', 'asc')->get();
+
+        return $assignedTasks->merge($userTasks);*/
+        return Task::where(function ($query) {
+            $query->where('user_id', Auth::user()->id)
+                  ->orWhereJsonContains('assigned_to', Auth::user()->id);
+        })
+        ->where('title', 'like', '%'.$this->search.'%')
+        ->orderBy('order_position', 'asc')
+        ->get();
     }
 
     public function render()
     {
         $tasks = $this->tasks;
-        return view('livewire.task-list', ['tasks' => $tasks])->layout('layouts.app');
+        $users = User::all();
+        return view('livewire.task-list', ['tasks' => $tasks, 'users' => $users])->layout('layouts.app');
     }
 
     public function setValues($id)
@@ -139,6 +155,7 @@ class TaskList extends Component
         else{
             $this->task->image = null;
         }
+        $this->task->assigned_to = $this->assigned_to;
         $this->task->save();
         $this->openModal = false;
 

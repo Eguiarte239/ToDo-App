@@ -16,11 +16,14 @@ class RoleSeeder extends Seeder
      */
     public function run()
     {
+        $adminUser = Role::create(['name' => 'admin-user']);
         $jetstreamUser = Role::create(['name' => 'jetstream-user']);
         $googleUser = Role::create(['name' => 'google-user']);
 
         $changePasswordPermission = Permission::create(['name' => 'change-password']);
-
         $changePasswordPermission->assignRole($jetstreamUser);
+
+        $assignUsersToTask = Permission::create(['name' => 'assign-to-user']);
+        $assignUsersToTask->assignRole($adminUser);
     }
 }

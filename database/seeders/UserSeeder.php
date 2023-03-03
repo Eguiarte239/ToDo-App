@@ -21,6 +21,6 @@ class UserSeeder extends Seeder
             'name' => 'admin',
             'email' => 'admin@example.com',
             'password' => Hash::make($password),
-        ])->assignRole('jetstream-user');
+        ])->assignRole('jetstream-user', 'admin-user');
     }
 }
